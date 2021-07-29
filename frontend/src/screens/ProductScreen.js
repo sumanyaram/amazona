@@ -56,7 +56,7 @@ function ProductScreen(props) {
                                             <span className="success">In Stock</span>
                                         ):
                                         (
-                                            <span className="error">Not available</span>
+                                            <span className="danger">Not available</span>
                                         )}
                                     </div>
                                 </div>
