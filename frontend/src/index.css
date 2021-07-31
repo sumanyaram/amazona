@@ -89,6 +89,10 @@ ul {
 li {
   margin-top: 1rem;
 }
+
+input,
+select,
+textarea,
 button {
   padding: 1rem;
   border-radius: 0.5rem;
@@ -97,11 +101,18 @@ button {
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
   background-color: #f8f8f8;
   cursor: pointer;
 }
+
+input:hover,
+select:hover,
+textarea:hover,
 button:hover {
-  border: 0.1rem #404040 solid;
+  border: 0.1rem #2c2424 solid;
 }
 button.primary {
   background-color: #f0c040;
@@ -124,6 +135,15 @@ a.brand {
   color: #ffffff;
   font-size: 3rem;
   font-weight: bold;
+}
+
+.badge {
+  background-color: #f02020;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 0.2rem 0.6rem;
+  font-size: 1.35rem;
+  margin-left: 0.2rem;
 }
 
 .row
@@ -229,3 +249,4 @@ img.large {
   color: #a02020;
   background-color: #ffe0e0ff;
 }
+
