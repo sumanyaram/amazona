@@ -29,7 +29,7 @@ function CartScreen(props) {
     }
 
     const checkoutHandler = () => {
-        props.history.push('/signin?redirect=shipping')
+        props.history.push('/signin?redirect=shipping');
     }
     return (
         <div className="row top">
@@ -80,7 +80,8 @@ function CartScreen(props) {
                 <div className="card card-body">
                     <ul>
                         <li>
-                            <h2>Subtotal ({cartItems.reduce((a, c) => a + c.qty , 0)} items) : ${cartItems.reduce((a, c) => a + c.qty * c.price, 0)}</h2>
+                            <h2>Subtotal ({cartItems.reduce((a, c) => a + c.qty , 0)} items) :
+                             ${cartItems.reduce((a, c) => a + c.qty * c.price, 0)}</h2>
                         </li>
                         <li>
                             <button type="button" onClick={checkoutHandler} className="primary block" disabled={cartItems.length === 0}>

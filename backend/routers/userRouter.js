@@ -7,20 +7,18 @@ import { generateToken } from '../utils.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/seed', expressAsyncHandler(async(req, res) => {
+userRouter.get('/seed', expressAsyncHandler(async (req, res) => {
     // remove all entries in the 'Users' collection.
-     await User.remove({});
+    await User.remove({});
 
     const createdUsers = await User.insertMany(data.users);
-    res.send({createdUsers});
+    res.send({ createdUsers });
 }));
 
-userRouter.post('/signin', expressAsyncHandler(async(req, res) => {
-    const user = await User.findOne({email:req.body.email});
-    if (user)
-    {
-        if (bcrypt.compareSync(req.body.password, user.password))
-        {
+userRouter.post('/signin', expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+        if (bcrypt.compareSync(req.body.password, user.password)) {
             res.send({
                 _id: user._id,
                 name: user.name,
@@ -29,16 +27,39 @@ userRouter.post('/signin', expressAsyncHandler(async(req, res) => {
                 token: generateToken(user)
             });
         }
-        else
-        {
-            res.status(401).send({message:'Password is invalid.'});
+        else {
+            res.status(401).send({ message: 'Password is invalid.' });
         }
+    }
+    else {
+        res.status(401).send({ message: 'Username is invalid.' });
+    }
+}));
+
+userRouter.post('/register', expressAsyncHandler(async (req, res) => {
+    const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8)
+    });
+
+    const createdUser = await user.save();
+    if (createdUser)
+    {
+        res.send({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            token: generateToken(createdUser)
+        });
     }
     else
     {
-        res.status(401).send({message:'Username is invalid.'});
+        res.status(500).send({ message: 'Failed to register the user.' });
     }
 }));
+
 
 
 export default userRouter;
