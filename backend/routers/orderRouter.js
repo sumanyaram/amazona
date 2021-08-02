@@ -5,6 +5,21 @@ import { isAuth } from '../utils.js';
 
 
 const orderRouter = express.Router();
+
+orderRouter.get('/:id',
+isAuth,  // only authenticated user can see the order
+expressAsyncHandler(async(req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order)
+    {
+        res.send(order);
+    }
+    else
+    {
+        res.status(400).send({message: 'Order not found'});
+    }
+}));
+
 orderRouter.post(
     '/',
     isAuth,
