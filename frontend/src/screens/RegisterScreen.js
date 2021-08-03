@@ -50,7 +50,7 @@ function RegisterScreen(props) {
                 {error && <MessageBox variant="danger">{error}</MessageBox>}
                 <div>
                     <label htmlFor="name">User name</label>
-                    <input type="name" id="name" placeholder="Enter user name" required
+                    <input type="text" id="name" placeholder="Enter user name" required
                         onChange={e => setName(e.target.value)}></input>
                 </div>
                 <div>

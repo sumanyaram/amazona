@@ -60,6 +60,16 @@ userRouter.post('/register', expressAsyncHandler(async (req, res) => {
     }
 }));
 
-
+userRouter.get('/:id', expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id); // get user with id
+    if (user)
+    {
+        res.send(user);
+    }
+    else
+    {
+        res.status(400).send({message : "Order not found"});
+    }
+}));
 
 export default userRouter;
