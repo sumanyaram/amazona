@@ -339,6 +339,10 @@ img.large {
   border-collapse: collapse;
 }
 
+.table thead {
+  background-color:#f5c48d
+}
+
 .table tbody tr:nth-of-type(odd) {
   background-color: #afadadd7;
 }

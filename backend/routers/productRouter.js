@@ -2,6 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import data from '../data.js';
 import Product from '../models/productModel.js';
+import { isAdmin, isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
@@ -27,6 +28,29 @@ productRouter.get('/:id', expressAsyncHandler(async(req, res) => {
     else
     {
         res.status(400).send({message: 'Product not found'});
+    }
+}));
+
+productRouter.post('/create', isAuth, isAdmin, expressAsyncHandler(async(req, res) => {
+    const product = new Product({
+        name : 'Enter name ' + Date.now(),
+        image : '/images/p2.jpg',
+        price : 0,
+        category : 'Enter category',
+        brand : 'Enter nrand',
+        countInStock : 0,
+        numReviews : 0,
+        description : 'Enter description',
+        rating : 0.0
+    });
+
+    try{
+        const createdProduct = await product.save();
+        res.send({message:'Product created', product:createdProduct});
+    }
+    catch (error)
+    {
+        res.status(500).send({message:'Failed to create the product. Details:' + error.message});
     }
 }));
 
