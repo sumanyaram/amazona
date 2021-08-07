@@ -1,10 +1,24 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import { isAuth } from '../utils.js';
+import { isAuth, isAdmin } from '../utils.js';
 
 
 const orderRouter = express.Router();
+
+// Get all orders - admin privileges
+orderRouter.get(('/'), isAuth, isAdmin, expressAsyncHandler(async(Req, res) => {
+    try
+    {
+        const data = await Order.find({});//.populate('user', 'name');
+        res.send(data);
+    }
+    catch (error)
+    {
+        res.status(500).send({message:'Failed to get the orders. Details:' + error.message});
+    }
+}));
+
 
 orderRouter.get('/mine',
 isAuth,  // only authenticated user can see the order
@@ -62,5 +76,19 @@ orderRouter.post(
         res.status(201).send({message: 'New order created', order: createdOrder});
     }
 }));
+
+orderRouter.delete('/:id', isAuth, isAdmin, expressAsyncHandler(async(req, res) => {
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId);
+    if (order)
+    {
+        const deletedOrder = await order.remove();
+        res.send({message: 'Order deleted', order: deletedOrder});
+    }
+    else{
+        res.status(404).send({message: 'Order not found'});
+    }
+}));
+
 
 export default orderRouter;
