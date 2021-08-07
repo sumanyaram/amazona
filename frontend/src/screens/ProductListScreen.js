@@ -3,10 +3,10 @@
 
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, listProducts } from '../actions/productActions';
+import { createProduct, deleteProduct, listProducts } from '../actions/productActions';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET } from '../constants/productConstants';
 
 function ProductListScreen(props) {
 
@@ -15,6 +15,10 @@ function ProductListScreen(props) {
 
     const productCreate = useSelector(state => state.productCreate);
     const {loading: createloading, error: createerror, success: createsuccess, product: createdproduct} = productCreate;
+
+    const productDelete = useSelector(state => state.productDelete);
+    const {loading: deleteloading, error: deleteerror, success: deletesuccess} = productDelete;
+
 
     const dispatch = useDispatch();
 
@@ -25,11 +29,23 @@ function ProductListScreen(props) {
             props.history.push(`/product/${createdproduct._id}/edit`);
         }
 
-        dispatch(listProducts());
-    }, [dispatch, createProduct, props.history, createsuccess]);
+        if (deletesuccess)
+        {
+            dispatch({type: PRODUCT_DELETE_RESET});
+            props.history.push();
+        }
 
-    const deleteHandler = () => {
+        dispatch(listProducts());
+    }, [dispatch, createProduct, props.history, createsuccess, deletesuccess]);
+
+
+    const deleteHandler = (product) => {
         // TODO: dispatch delete handler
+
+        if (window.confirm('Are you sure to delete?'))
+        {
+            dispatch(deleteProduct(product._id));
+        }
     };
 
     const createHandler = () => {
@@ -43,6 +59,9 @@ function ProductListScreen(props) {
                 <button type="button" className="primary" onClick={createHandler}>Create Product</button>
             </div>
             
+            {deleteloading && <LoadingBox></LoadingBox>}
+            {deleteerror && <MessageBox variant="danger">{deleteerror}</MessageBox>}
+
             {createloading && <LoadingBox></LoadingBox>}
             {createerror && <MessageBox variant="danger">{createerror}</MessageBox>}
 

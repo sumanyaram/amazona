@@ -2,9 +2,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { detailsProduct } from '../actions/productActions';
+import { detailsProduct, updateProduct } from '../actions/productActions';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import Axios from 'axios';
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
 
 function ProductEditScreen(props) {
     const productId = props.match.params.id;
@@ -20,17 +22,73 @@ function ProductEditScreen(props) {
     const productDetails = useSelector(state => state.productDetails);
     const { loading, error, product } = productDetails;
 
+
+    // product update
+    const productUpdate = useSelector(state => state.productUpdate);
+    const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+
     const dispatch = useDispatch();
 
-    
+    const userSignin = useSelector(state => state.userSignin);
+    const {userInfo} = userSignin;
+
     const submitHandler = (e) => {
         e.preventDefault();
-        // TODO: testing
+        dispatch(updateProduct({
+            _id: productId,
+            name,
+            price,
+            image, 
+            category, 
+            countInStock,
+            brand,
+            description,
+        }))
     };
 
+    const [loadingUpload, setLoadingUpload] = useState(false);
+    const [errorUpload, setErrorUpload] = useState('');
+
+    const uploadFileHandler = async (e) => {
+        // TODO: upload the file
+
+        const filename = e.target.files[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('image', filename);
+        setLoadingUpload(true);
+
+        try{
+            const {data} = await Axios.post('/api/uploads', bodyFormData, {
+                headers: {
+                    'Content-Type' : 'multipart/form-data',
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            });
+
+            setImage(data);
+            setLoadingUpload(false);
+        }
+        catch(error)
+        {
+            setLoadingUpload(false);
+
+            var errorMsg =  error.response && error.response.data.message ?
+                        error.response.data.message :
+                        error.message;
+
+            setErrorUpload(errorMsg);
+        }
+    }
 
     useEffect(() => {
-        if (!product || (product._id !== productId)) {
+        // if the producut is successfully updated. then reset the update
+        if (successUpdate)
+        {
+            props.history.push('/productlist');
+        }
+
+        if (!product || (product._id !== productId) || successUpdate) {
+            dispatch({type:PRODUCT_UPDATE_RESET});
             dispatch(detailsProduct(productId));
         }
         else {
@@ -44,7 +102,10 @@ function ProductEditScreen(props) {
         }
     }, [dispatch, 
         productId,
-        product]);
+        product,
+        successUpdate,
+        props.history,
+    ]);
 
     return (
         <div>
@@ -53,6 +114,10 @@ function ProductEditScreen(props) {
                 <div>
                     <h1>Edit Product</h1>
                 </div>
+
+                {loadingUpdate && <LoadingBox></LoadingBox>}
+                {errorUpdate && <MessageBox variant="danger">{errorUpdate}</MessageBox>}
+
                 {loading ? <LoadingBox></LoadingBox>:
                 error ? <MessageBox variant="danger">{error}</MessageBox>
                 :
@@ -71,6 +136,14 @@ function ProductEditScreen(props) {
                         <label htmlFor="image">Image</label>
                         <input type="text" id="image" placeholder="Enter image" value={image} 
                             onChange={e => setImage(e.target.value)}></input>
+                    </div>
+                    <div>
+                        <label htmlFor="imageFile">Image File</label>
+                        <input type="file" id="imageFile" label="Browse image"
+                            onChange={uploadFileHandler}>
+                        </input>
+                        {loadingUpload && <LoadingBox></LoadingBox>}
+                        {errorUpload && <MessageBox variant="danger">{errorUpload}</MessageBox>}
                     </div>
                     <div>
                         <label htmlFor="category">Category</label>
