@@ -34,9 +34,17 @@ const __dirname = path.resolve(); // this gives the current folder name
 // route the path for uploads to the current folder and append uploads to it
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-app.get('/', (req, res) => {
-    res.send('i am ready always!');
-});
+
+// serving from build folder of frontend
+app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/build/index.html')));
+
+
+
+// app.get('/', (req, res) => {
+//     res.send('i am ready always!');
+// });
 
 
 // errors inside express async handler rotuers will be sent to the below middleware
