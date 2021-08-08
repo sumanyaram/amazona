@@ -136,17 +136,15 @@ function OrderScreen(props) {
 
                             {userInfo.isAdmin && !order.isDelivered && (
                                 <li>
-                                {loadingDeliver && <LoadingBox></LoadingBox>}
-                                {errorDeliver && (
-                                    <MessageBox variant="danger">{errorDeliver}</MessageBox>
-                                )}
-                                <button
-                                    type="button"
-                                    className="primary block"
-                                    onClick={deliverHandler}
-                                >
-                                    Deliver Order
-                                </button>
+                                    {loadingDeliver && <LoadingBox></LoadingBox>}
+                                    {errorDeliver && <MessageBox variant="danger">{errorDeliver}</MessageBox>}
+                                    <button
+                                        type="button"
+                                        className="primary block"
+                                        onClick={deliverHandler}
+                                    >
+                                        Deliver Order
+                                    </button>
                                 </li>
                             )}
                         </ul>
