@@ -1,7 +1,7 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
-import { signout } from './actions/userActions';
 import AdminRoute from './components/AdminRoute';
 import PrivateRoute from './components/PrivateRoute';
 import CartScreen from './screens/OrderCartScreen';
@@ -18,6 +18,9 @@ import ProfileScreen from './screens/ProfileScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import SigninScreen from './screens/SigninScreen';
+import SignoutScreen from './screens/SignoutScreen';
+import UserListScreen from './screens/UserListScreen';
+import UserEditScreen from './screens/UserEditScreen';
 
 function App() {
 
@@ -26,13 +29,6 @@ function App() {
 
     const userSignin = useSelector(state => state.userSignin);
     const { userInfo } = userSignin;
-
-    const dispatch = useDispatch();
-    const signoutHandler = () => {
-        dispatch(signout());
-    };
-
-    
 
     return (
         <BrowserRouter>
@@ -66,7 +62,7 @@ function App() {
                                     <Link to="/ordershistory">Orders</Link>
                                 </li>
                                 <li>
-                                    <Link to="#signout" onClick={signoutHandler}>Sign Out</Link>
+                                    <Link to="/signout">Sign Out</Link>
                                 </li>
                             </ul>
                         </div>
@@ -103,7 +99,8 @@ function App() {
             <Route path="/cart/:id?" component={CartScreen}></Route>
             <Route path="/product/:id/edit" component={ProductEditScreen} exact={true}></Route>            
             <Route path="/product/:id" component={ProductScreen} exact={true}></Route>
-            <Route path="/signin" component={SigninScreen}></Route>      
+            <Route path="/signin" component={SigninScreen}></Route>
+            <Route path="/signout" component={SignoutScreen}></Route>   
             <Route path="/register" component={RegisterScreen}></Route>
             <Route path="/shipping" component={ShippingAddressScreen}></Route>
             <Route path="/payment" component={PaymentMethodScreen}></Route>  
@@ -113,6 +110,8 @@ function App() {
             <PrivateRoute path="/profile" component={ProfileScreen}></PrivateRoute>
             <AdminRoute path="/productlist" component={ProductListScreen}></AdminRoute>
             <AdminRoute path="/orderlist" component={OrderListScreen}></AdminRoute>
+            <AdminRoute path="/userlist" component={UserListScreen}></AdminRoute>
+            <AdminRoute path="/user/:id/edit" component={UserEditScreen}></AdminRoute>
             <Route path="/" component={HomeScreen} exact={true}></Route>            
         </main>
         <footer className="row center">
